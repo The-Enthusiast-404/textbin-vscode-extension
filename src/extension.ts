@@ -1,26 +1,22 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+// src/extension.ts
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+import * as vscode from "vscode";
+import { signInCommand } from "./commands/signIn";
+import { registerCommand } from "./commands/register";
+
 export function activate(context: vscode.ExtensionContext) {
+  console.log("TextBin extension is now active!");
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "textbin-vscode-extension" is now active!');
+  let signInDisposable = vscode.commands.registerCommand(
+    "textbin.signIn",
+    signInCommand
+  );
+  let registerDisposable = vscode.commands.registerCommand(
+    "textbin.register",
+    registerCommand
+  );
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('textbin-vscode-extension.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from TextBin!');
-	});
-
-	context.subscriptions.push(disposable);
+  context.subscriptions.push(signInDisposable, registerDisposable);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
