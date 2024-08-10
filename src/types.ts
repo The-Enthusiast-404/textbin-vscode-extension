@@ -1,22 +1,24 @@
-import * as vscode from "vscode";
+export interface EncryptedText {
+  id: number;
+  title: string;
+  content: string;
+  format: string;
+  created_at: string;
+  expires: string | null;
+  encryption_salt: string;
+  slug: string;
+}
 
-export class TextItem extends vscode.TreeItem {
-  constructor(
-    public readonly title: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly command?: vscode.Command,
-    public readonly createdAt?: string,
-    public readonly expires?: string,
-    public readonly format?: string
-  ) {
-    super(title, collapsibleState);
-    this.tooltip = `${this.title}\nCreated: ${new Date(
-      this.createdAt || ""
-    ).toLocaleString()}\nExpires: ${
-      this.expires ? new Date(this.expires).toLocaleString() : "Never"
-    }\nFormat: ${this.format || "Unknown"}`;
-    this.description = this.createdAt
-      ? new Date(this.createdAt).toLocaleDateString()
-      : "Unknown date";
-  }
+export interface TextData {
+  title: string;
+  content: string;
+  format: string;
+  expiresUnit: string;
+  expiresValue: number;
+  is_private: boolean;
+  encryptionSalt: string;
+}
+
+export interface TextResponse {
+  text: EncryptedText;
 }

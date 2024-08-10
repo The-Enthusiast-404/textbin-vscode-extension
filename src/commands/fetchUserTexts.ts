@@ -1,9 +1,8 @@
 import * as vscode from "vscode";
 import { fetchUserData } from "../services/api";
 import { getToken } from "../utils/authentication";
-import { TextItem } from "../types";
+import { EncryptedText } from "../types";
 import { TextTreeProvider } from "../providers/TextTreeProvider";
-import Cookies from "js-cookie";
 
 export async function fetchUserTextsCommand(
   context: vscode.ExtensionContext,
@@ -15,36 +14,17 @@ export async function fetchUserTextsCommand(
     return;
   }
 
-  // Try to get email from multiple sources
-  let email = context.globalState.get<string>("userEmail");
+  const email = context.globalState.get<string>("userEmail");
   if (!email) {
-    email = Cookies.get("userEmail");
-  }
-
-  console.log("Retrieved email:", email);
-
-  if (!email) {
-    email = await vscode.window.showInputBox({
-      prompt: "Please enter your email address",
-      validateInput: (value) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-          ? null
-          : "Please enter a valid email address";
-      },
-    });
-
-    if (!email) {
-      vscode.window.showErrorMessage("Email is required to fetch texts.");
-      return;
-    }
-
-    context.globalState.update("userEmail", email);
-    Cookies.set("userEmail", email, { expires: 7 });
+    vscode.window.showErrorMessage(
+      "User email not found. Please sign in again."
+    );
+    return;
   }
 
   try {
     const userData = await fetchUserData(token, email);
-    const texts = userData.user.texts;
+    const texts: EncryptedText[] = userData.user.texts;
 
     if (!texts || texts.length === 0) {
       vscode.window.showInformationMessage("You don't have any texts yet.");
@@ -52,23 +32,7 @@ export async function fetchUserTextsCommand(
       return;
     }
 
-    const textItems: TextItem[] = texts.map(
-      (text: any) =>
-        new TextItem(
-          text.title || "Untitled",
-          vscode.TreeItemCollapsibleState.None,
-          {
-            command: "textbin.decryptText",
-            title: "Decrypt Text",
-            arguments: [text],
-          },
-          text.created_at,
-          text.expires,
-          text.format
-        )
-    );
-
-    treeDataProvider.updateTexts(textItems);
+    treeDataProvider.updateTexts(texts);
     vscode.window.showInformationMessage(
       `Fetched ${texts.length} texts successfully!`
     );

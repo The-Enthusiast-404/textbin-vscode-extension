@@ -1,7 +1,10 @@
 import * as vscode from "vscode";
 import { generateKey, decryptText } from "../utils/encryption";
 
-export async function decryptTextCommand(text: any) {
+export async function decryptTextCommand(
+  text: any,
+  context: vscode.ExtensionContext
+) {
   const password = await vscode.window.showInputBox({
     prompt: "Enter the decryption password",
     password: true,
