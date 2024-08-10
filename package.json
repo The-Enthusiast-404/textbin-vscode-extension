@@ -24,6 +24,10 @@
       {
         "command": "textbin.createText",
         "title": "TextBin: Create New Text"
+      },
+      {
+        "command": "textbin.fetchUserTexts",
+        "title": "TextBin: Fetch My Texts"
       }
     ]
   },
@@ -39,6 +43,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
     "@types/vscode": "^1.92.0",
@@ -53,6 +58,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "axios": "^1.7.3"
+    "axios": "^1.7.3",
+    "js-cookie": "^3.0.5"
   }
 }

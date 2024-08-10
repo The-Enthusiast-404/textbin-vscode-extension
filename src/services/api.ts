@@ -52,3 +52,24 @@ export async function createText(
     throw new Error("Failed to create text");
   }
 }
+
+export async function fetchUserData(
+  token: string,
+  email: string
+): Promise<any> {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/users/email`,
+      { email: email },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch user data");
+  }
+}
