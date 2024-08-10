@@ -3,7 +3,7 @@
 import * as vscode from "vscode";
 import { register } from "../services/api";
 
-export async function registerCommand() {
+export async function registerCommand(context: vscode.ExtensionContext) {
   const name = await vscode.window.showInputBox({
     prompt: "Enter your full name",
   });

@@ -20,6 +20,10 @@
       {
         "command": "textbin.register",
         "title": "TextBin: Register"
+      },
+      {
+        "command": "textbin.createText",
+        "title": "TextBin: Create New Text"
       }
     ]
   },
