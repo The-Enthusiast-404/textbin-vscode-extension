@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import { signIn } from "../services/api";
 import { storeToken } from "../utils/authentication";
 
-export async function signInCommand() {
+export async function signInCommand(context: vscode.ExtensionContext) {
   const email = await vscode.window.showInputBox({
     prompt: "Enter your email",
   });
@@ -18,7 +18,8 @@ export async function signInCommand() {
 
   try {
     const token = await signIn(email, password);
-    storeToken(token);
+    storeToken(token, context);
+    console.log("Stored Token: ", token); // Debugging line
     vscode.window.showInformationMessage("Signed in successfully!");
   } catch (error) {
     vscode.window.showErrorMessage(

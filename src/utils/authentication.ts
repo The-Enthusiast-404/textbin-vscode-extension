@@ -2,14 +2,19 @@
 
 import * as vscode from "vscode";
 
-export function storeToken(token: string): void {
-  vscode.workspace.getConfiguration().update("textbin.token", token, true);
+const TOKEN_KEY = "textbin.token";
+
+export function storeToken(
+  token: string,
+  context: vscode.ExtensionContext
+): void {
+  context.globalState.update(TOKEN_KEY, token);
 }
 
-export function getToken(): string | undefined {
-  return vscode.workspace.getConfiguration().get("textbin.token");
+export function getToken(context: vscode.ExtensionContext): string | undefined {
+  return context.globalState.get<string>(TOKEN_KEY);
 }
 
-export function clearToken(): void {
-  vscode.workspace.getConfiguration().update("textbin.token", undefined, true);
+export function clearToken(context: vscode.ExtensionContext): void {
+  context.globalState.update(TOKEN_KEY, undefined);
 }

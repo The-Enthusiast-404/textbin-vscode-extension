@@ -28,3 +28,27 @@ export async function register(
     throw new Error("Failed to register");
   }
 }
+
+export async function createText(
+  token: string,
+  data: {
+    title: string;
+    content: string;
+    format: string;
+    expiresValue: number;
+    expiresUnit: string;
+    encryptionSalt: string;
+  }
+): Promise<any> {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/texts`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to create text");
+  }
+}
