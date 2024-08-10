@@ -1,9 +1,14 @@
 import * as vscode from "vscode";
 import { fetchUserData } from "../services/api";
 import { getToken } from "../utils/authentication";
+import { TextItem } from "../types";
+import { TextTreeProvider } from "../providers/TextTreeProvider";
 import Cookies from "js-cookie";
 
-export async function fetchUserTextsCommand(context: vscode.ExtensionContext) {
+export async function fetchUserTextsCommand(
+  context: vscode.ExtensionContext,
+  treeDataProvider: TextTreeProvider
+) {
   const token = getToken(context);
   if (!token) {
     vscode.window.showErrorMessage("Please sign in first.");
@@ -16,11 +21,9 @@ export async function fetchUserTextsCommand(context: vscode.ExtensionContext) {
     email = Cookies.get("userEmail");
   }
 
-  // Debug: Log the email retrieval attempt
   console.log("Retrieved email:", email);
 
   if (!email) {
-    // If email is still not found, ask the user to input it
     email = await vscode.window.showInputBox({
       prompt: "Please enter your email address",
       validateInput: (value) => {
@@ -35,52 +38,42 @@ export async function fetchUserTextsCommand(context: vscode.ExtensionContext) {
       return;
     }
 
-    // Save the email for future use
     context.globalState.update("userEmail", email);
     Cookies.set("userEmail", email, { expires: 7 });
   }
 
   try {
-    // Debug: Log the API call attempt
-    console.log("Attempting to fetch user data for email:", email);
-
     const userData = await fetchUserData(token, email);
-
-    // Debug: Log the received user data
-    console.log("Received user data:", userData);
-
     const texts = userData.user.texts;
 
     if (!texts || texts.length === 0) {
       vscode.window.showInformationMessage("You don't have any texts yet.");
+      treeDataProvider.updateTexts([]);
       return;
     }
 
-    // Create a new untitled document with the list of texts
-    let content = "Your Texts:\n\n";
-    texts.forEach((text: any, index: number) => {
-      content += `${index + 1}. Title: ${text.title}\n`;
-      content += `   Slug: ${text.slug}\n`;
-      content += `   Created: ${new Date(text.created_at).toLocaleString()}\n`;
-      content += `   Expires: ${
-        text.expires ? new Date(text.expires).toLocaleString() : "Never"
-      }\n`;
-      content += `   Format: ${text.format}\n\n`;
-    });
+    const textItems: TextItem[] = texts.map(
+      (text: any) =>
+        new TextItem(
+          text.title || "Untitled",
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: "textbin.decryptText",
+            title: "Decrypt Text",
+            arguments: [text],
+          },
+          text.created_at,
+          text.expires,
+          text.format
+        )
+    );
 
-    const document = await vscode.workspace.openTextDocument({
-      content: content,
-      language: "plaintext",
-    });
-    await vscode.window.showTextDocument(document);
-
+    treeDataProvider.updateTexts(textItems);
     vscode.window.showInformationMessage(
       `Fetched ${texts.length} texts successfully!`
     );
   } catch (error) {
-    // Debug: Log the error
     console.error("Error fetching texts:", error);
-
     vscode.window.showErrorMessage("Failed to fetch texts. Please try again.");
   }
 }

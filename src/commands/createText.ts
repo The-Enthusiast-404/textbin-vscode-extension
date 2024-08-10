@@ -53,7 +53,7 @@ export async function createTextCommand(context: vscode.ExtensionContext) {
     const key = await generateKey(password, salt);
     const encryptedTitle = await encryptText(title, key);
     const encryptedContent = await encryptText(content, key);
-    const encryptionSalt = salt.toString("base64");
+    const encryptionSalt = Buffer.from(salt).toString("base64");
 
     const result = await createText(token, {
       title: encryptedTitle,
@@ -68,6 +68,7 @@ export async function createTextCommand(context: vscode.ExtensionContext) {
       `Text created successfully! Slug: ${result.text.slug}`
     );
   } catch (error) {
+    console.error("Error creating text:", error);
     vscode.window.showErrorMessage("Failed to create text. Please try again.");
   }
 }

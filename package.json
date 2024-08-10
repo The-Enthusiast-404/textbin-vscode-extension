@@ -12,6 +12,23 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "textbin-sidebar",
+          "title": "TextBin",
+          "icon": "media/textbin-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "textbin-sidebar": [
+        {
+          "id": "textbinTexts",
+          "name": "TextBin Texts"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "textbin.signIn",
@@ -23,11 +40,15 @@
       },
       {
         "command": "textbin.createText",
-        "title": "TextBin: Create New Text"
+        "title": "TextBin: Create Text"
       },
       {
         "command": "textbin.fetchUserTexts",
-        "title": "TextBin: Fetch My Texts"
+        "title": "TextBin: Fetch User Texts"
+      },
+      {
+        "command": "textbin.decryptText",
+        "title": "TextBin: Decrypt Text"
       }
     ]
   },
