@@ -3,6 +3,29 @@ import { createText } from "../services/api";
 import { getToken } from "../utils/authentication";
 import { generateSalt, generateKey, encryptText } from "../utils/encryption";
 
+export const languageOptions = [
+  "plaintext",
+  "python",
+  "javascript",
+  "typescript",
+  "java",
+  "c",
+  "cpp",
+  "csharp",
+  "go",
+  "rust",
+  "swift",
+  "kotlin",
+  "ruby",
+  "php",
+  "html",
+  "css",
+  "sql",
+  "bash",
+  "yaml",
+  "json",
+];
+
 export async function createTextCommand(context: vscode.ExtensionContext) {
   const token = getToken(context);
   if (!token) {
@@ -40,8 +63,8 @@ export async function createTextCommand(context: vscode.ExtensionContext) {
     if (!content) return;
   }
 
-  const format = await vscode.window.showQuickPick(["plaintext", "markdown"], {
-    placeHolder: "Select the format",
+  const format = await vscode.window.showQuickPick(languageOptions, {
+    placeHolder: "Select the language format",
   });
   if (!format) return;
 
