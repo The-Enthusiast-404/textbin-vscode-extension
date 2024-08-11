@@ -26,6 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("textbin.createText", () =>
       createTextCommand(context)
     ),
+    vscode.commands.registerCommand("textbin.createTextFromSelection", () =>
+      createTextCommand(context)
+    ),
     vscode.commands.registerCommand("textbin.fetchUserTexts", () =>
       fetchUserTextsCommand(context, treeDataProvider)
     ),

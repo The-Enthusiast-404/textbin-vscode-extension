@@ -53,6 +53,10 @@
       {
         "command": "textbin.decryptAndShowText",
         "title": "TextBin: Decrypt and Show Text"
+      },
+      {
+        "command": "textbin.createTextFromSelection",
+        "title": "TextBin: Create Text from Selection"
       }
     ],
     "menus": {
@@ -60,6 +64,13 @@
         {
           "command": "textbin.decryptAndShowText",
           "when": "view == textbinTexts"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "editorHasSelection",
+          "command": "textbin.createTextFromSelection",
+          "group": "textbin"
         }
       ]
     }

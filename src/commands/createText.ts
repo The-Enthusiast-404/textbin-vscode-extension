@@ -3,6 +3,29 @@ import { createText } from "../services/api";
 import { getToken } from "../utils/authentication";
 import { generateSalt, generateKey, encryptText } from "../utils/encryption";
 
+export const languageOptions = [
+  "plaintext",
+  "python",
+  "javascript",
+  "typescript",
+  "java",
+  "c",
+  "cpp",
+  "csharp",
+  "go",
+  "rust",
+  "swift",
+  "kotlin",
+  "ruby",
+  "php",
+  "html",
+  "css",
+  "sql",
+  "bash",
+  "yaml",
+  "json",
+];
+
 export async function createTextCommand(context: vscode.ExtensionContext) {
   const token = getToken(context);
   if (!token) {
@@ -10,18 +33,38 @@ export async function createTextCommand(context: vscode.ExtensionContext) {
     return;
   }
 
+  const editor = vscode.window.activeTextEditor;
+  let selectedText = "";
+
+  if (editor) {
+    const selection = editor.selection;
+    selectedText = editor.document.getText(selection);
+  }
+
   const title = await vscode.window.showInputBox({
     prompt: "Enter the title of your text",
   });
   if (!title) return;
 
-  const content = await vscode.window.showInputBox({
-    prompt: "Enter the content of your text",
-  });
-  if (!content) return;
+  let content: string | undefined;
+  if (selectedText) {
+    const useSelection = await vscode.window.showQuickPick(["Yes", "No"], {
+      placeHolder: "Use selected code as content?",
+    });
+    if (useSelection === "Yes") {
+      content = selectedText;
+    }
+  }
 
-  const format = await vscode.window.showQuickPick(["plaintext", "markdown"], {
-    placeHolder: "Select the format",
+  if (!content) {
+    content = await vscode.window.showInputBox({
+      prompt: "Enter the content of your text",
+    });
+    if (!content) return;
+  }
+
+  const format = await vscode.window.showQuickPick(languageOptions, {
+    placeHolder: "Select the language format",
   });
   if (!format) return;
 
