@@ -94,12 +94,12 @@ export async function createTextCommand(context: vscode.ExtensionContext) {
   try {
     const salt = generateSalt();
     const key = await generateKey(password, salt);
-    const encryptedTitle = await encryptText(title, key);
+    // const encryptedTitle = await encryptText(title, key);
     const encryptedContent = await encryptText(content, key);
     const encryptionSalt = Buffer.from(salt).toString("base64");
 
     const result = await createText(token, {
-      title: encryptedTitle,
+      title: title,
       content: encryptedContent,
       format,
       expiresValue: parseInt(expiryValue),

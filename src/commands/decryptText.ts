@@ -17,7 +17,7 @@ export async function decryptTextCommand(
   try {
     const salt = Buffer.from(text.encryption_salt, "base64");
     const key = await generateKey(password, salt);
-    const decryptedTitle = await decryptText(text.title, key);
+    // const decryptedTitle = await decryptText(text.title, key);
     const decryptedContent = await decryptText(text.content, key);
 
     const document = await vscode.workspace.openTextDocument({
@@ -26,7 +26,7 @@ export async function decryptTextCommand(
     });
 
     await vscode.window.showTextDocument(document, { preview: false });
-    vscode.window.showInformationMessage(`Decrypted text: ${decryptedTitle}`);
+    vscode.window.showInformationMessage(`Decrypted text: ${text.title}`);
   } catch (error) {
     console.error("Error decrypting text:", error);
     vscode.window.showErrorMessage(
