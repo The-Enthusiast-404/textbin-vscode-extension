@@ -3,9 +3,17 @@ import * as crypto from "crypto";
 const SALT_LENGTH = 16;
 const IV_LENGTH = 12;
 
+export function generateSalt(): Uint8Array {
+  return crypto.randomBytes(SALT_LENGTH);
+}
+
+export function generateIV(): Uint8Array {
+  return crypto.randomBytes(IV_LENGTH);
+}
+
 export async function generateKey(
   password: string,
-  salt: Buffer
+  salt: Uint8Array
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     crypto.pbkdf2(password, salt, 100000, 32, "sha256", (err, derivedKey) => {
@@ -13,14 +21,6 @@ export async function generateKey(
       else resolve(derivedKey);
     });
   });
-}
-
-export function generateSalt(): Buffer {
-  return crypto.randomBytes(SALT_LENGTH);
-}
-
-export function generateIV(): Buffer {
-  return crypto.randomBytes(IV_LENGTH);
 }
 
 export async function encryptText(text: string, key: Buffer): Promise<string> {
