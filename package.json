@@ -2,6 +2,7 @@
   "name": "textbin-vscode-extension",
   "displayName": "TextBin",
   "description": "This is a vscode extension of textbin software",
+  "publisher": "TheEnthusiast",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.92.0"
